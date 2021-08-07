@@ -1,18 +1,26 @@
 ﻿using Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DbOperations
 {
     public class MovieStoreDbContext : DbContext, IMovieStoreDbContext
     {
-        public MovieStoreDbContext(DbContextOptions<MovieStoreDbContext> options) : base(options)
+        //private readonly IConfiguration Configuration;
+        //public MovieStoreDbContext(IConfiguration configuration)
+        //{
+        //    Configuration = configuration;
+        //}
+
+        public MovieStoreDbContext(DbContextOptions options) : base(options)
         {
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            //options.UseSqlServer(Configuration.GetConnectionString("Development"));
+            options.UseInMemoryDatabase(databaseName: "MovieStore");
+        }
+
 
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Actor> Actors { get; set; }
@@ -23,6 +31,6 @@ namespace DbOperations
         public override int SaveChanges()
         {
             return base.SaveChanges();
-        }        
+        }
     }
 }
