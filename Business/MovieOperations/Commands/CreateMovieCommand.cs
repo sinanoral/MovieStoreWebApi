@@ -24,15 +24,18 @@ namespace Application.MovieOperations.Commands
 
         public void Handle()
         {
-            var movie = _context.Movies.Include(x => x.Genre)
-                .Include(x => x.Actors).Include(x => x.Director)
-                .SingleOrDefault(x => x.Name == _Model.Name);
+            var movie = _context.Movies.SingleOrDefault(x => x.Name == _Model.Name);
             if (movie is not null)
                 throw new InvalidOperationException("Movie already exists");
 
             movie = _mapper.Map<Movie>(_Model);
 
             _context.Movies.Add(movie);
+            foreach (var actor in movie.Actors)
+            {
+                _context.Entry(actor).State = EntityState.Unchanged;
+            }
+
             _context.SaveChanges();
         }
     }

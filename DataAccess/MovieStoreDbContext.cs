@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DbOperations
 {
@@ -32,5 +33,11 @@ namespace DbOperations
         {
             return base.SaveChanges();
         }
+
+        public override EntityEntry<TEntity> Entry<TEntity>(TEntity entity)
+        {
+            return base.Entry(entity);
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DbOperations
 {
@@ -12,5 +13,6 @@ namespace DbOperations
         DbSet<Customer> Customers { get; set; }
         DbSet<Genre> Genres { get; set; }
         int SaveChanges();
+        EntityEntry<T> Entry<T>(T entity) where T: class;
     }
 }

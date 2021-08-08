@@ -40,5 +40,21 @@ namespace Api.Controllers
             command.Handle();   
             return Ok();
         }
+
+        [HttpPut("id")]
+        public IActionResult Put( int id, [FromBody]UpdateMovieM updatedMovie)
+        {
+            var command = new UpdateMovieCommand(_context, _mapper, id, updatedMovie);
+            command.Handle();
+            return Ok();
+        }
+
+        [HttpDelete("id")]
+        public IActionResult Delete(int id)
+        {
+            var command = new DeleteMovieCommand(_context, id);
+            command.Handle();
+            return Ok();
+        }
     }
 }
