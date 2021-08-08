@@ -1,18 +1,12 @@
+using Application.MappingProfile;
 using DbOperations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Api
 {
@@ -34,7 +28,10 @@ namespace Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
             });
-            services.AddDbContext<MovieStoreDbContext>(options => options.UseInMemoryDatabase(databaseName: "MovieStoreDB"));
+
+            services.AddDbContext<MovieStoreDbContext>();
+            services.AddTransient<IMovieStoreDbContext>(provider => provider.GetService<MovieStoreDbContext>());
+            services.AddAutoMapper(Assembly.Load(typeof(MappingProfile).Assembly.GetName()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

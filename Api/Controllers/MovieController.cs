@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Application.MovieOperations.Commands;
+using Application.MovieOperations.Queries;
+using AutoMapper;
+using DbOperations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
@@ -10,31 +10,35 @@ namespace Api.Controllers
     [ApiController]
     public class MovieController : ControllerBase
     {
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IMovieStoreDbContext _context;
+        private readonly IMapper _mapper;
+
+        public MovieController(IMovieStoreDbContext context, IMapper mapper)
         {
-            return new string[] { "value1", "value2" };
+            _context = context;
+            _mapper = mapper;
         }
 
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet]
+        public IActionResult GetAll()
         {
-            return "value";
+            var query = new GetMoviesQuery(_context, _mapper);
+            return Ok(query.Handle());
+        }
+
+        [HttpGet("id")]
+        public IActionResult Get(int id)
+        {
+            var query = new GetMovieDetailQuery(_context, _mapper, id);
+            return Ok(query.Handle());
         }
 
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] CreateMovieM newMovie)
         {
-        }
-
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var command = new CreateMovieCommand(_context, _mapper, newMovie);
+            command.Handle();   
+            return Ok();
         }
     }
 }
